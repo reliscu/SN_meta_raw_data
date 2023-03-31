@@ -5,7 +5,7 @@ source activate CellBender
 mkdir SRR12391908/cellbender
 cellbender remove-background \
   --input SRR12391908/outs/raw_feature_bc_matrix.h5 \
-  --output SRR12391908/output.h5 \
+  --output SRR12391908/cellbender/output.h5 \
   --cuda \
   --expected-cells 2000 \
   --total-droplets-included 20000
@@ -65,8 +65,6 @@ cellbender remove-background \
   --cuda \
   --expected-cells 1200 \
   --total-droplets-included 20000
-
-#### START HERE #####
 
 mkdir SRR12391925/cellbender
 cellbender remove-background \
