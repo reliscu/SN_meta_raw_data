@@ -79,14 +79,3 @@ for ea in GSM5292854 GSM5292855 GSM5292856; do
   --localcores=10
   # --no-bam
 done
-
-## Concatonate samples:
-
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/aligned_reads
-
-cellranger="/opt/cellranger-7.1.0/bin/cellranger"
-
-$cellranger aggr \
---id="morabito_2021" \
---csv="cellranger_aggr.csv" \
---normalize="none"

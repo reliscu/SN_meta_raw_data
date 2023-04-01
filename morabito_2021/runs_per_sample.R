@@ -11,17 +11,12 @@ dat <- dat[grep("TRANS", dat$LibrarySource),]
 
 sampleinfo <- pData(getGEO("GSE174367")[[1]])
 sampleinfo <- sampleinfo[is.element(sampleinfo$geo_accession, dat$`Sample Name`),]
-sampleinfo[grep("101", sampleinfo$title), c(2)]
-# [1] GSM5292839
 
 ## Sample 101 is not listed in paper supplementary material.
 ## According to GEO, it was not included in the analysis due to quality issues.
-
-dat[is.element(dat$`Sample Name`, "GSM5292839"), c(1,2)]
-
 ## Manually removing runs associated with this sample from SRR accession list
 
-dat <- dat[!is.element(dat$`Sample Name`, "GSM5292839"),]
+dat <- dat[!is.element(dat$`Sample Name`, sampleinfo[grep("101", sampleinfo$title), c(2)]),]
 
 ## Get list of runs per sample:
 

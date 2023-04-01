@@ -1,0 +1,8 @@
+"Label","Accession_ID","Age","Sex","Batch","No.Nuclei"
+"Sample-100 (snRNA-seq)","GSM5292838",79,"M",3,4600
+"Sample-52 (snRNA-seq)","GSM5292851",83,"M",2,2800
+"Sample-58 (snRNA-seq)","GSM5292852",90,"M",2,2600
+"Sample-66 (snRNA-seq)","GSM5292853",90,"F",2,2800
+"Sample-82 (snRNA-seq)","GSM5292854",79,"M",2,2400
+"Sample-90 (snRNA-seq)","GSM5292855",79,"F",2,2400
+"Sample-96 (snRNA-seq)","GSM5292856",79,"M",3,4500
