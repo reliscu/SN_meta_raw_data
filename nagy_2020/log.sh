@@ -39,12 +39,8 @@ for i in $(seq 2 $n_files); do
   
   n_runs=$(cat runs.txt | wc -w)
   if [[ $n_runs > 1 ]]; then
-  
-    # cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[1]} | sed s/$sra/$geo/)
-    # cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[1]} | sed s/$sra/$geo/)
-    cp ${runsR1[@]} ${geo}
-    cp ${runsR2[@]} ${geo}
-    
+    cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[1]} | sed s/$sra/$geo/)
+    cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[1]} | sed s/$sra/$geo/)
   else
     cp $runsR1 ${geo}/$(echo $runsR1 | sed s/$sra/$geo/)
     cp $runsR2 ${geo}/$(echo $runsR2 | sed s/$sra/$geo/)
@@ -52,14 +48,6 @@ for i in $(seq 2 $n_files); do
 done
 
 rm runs.txt
-
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/raw_data/GSM4281997
-for ea in SRR12391931*; do mv $ea $(echo $ea | sed s/S1/S2/); done
-for ea in *; do mv $ea $(echo $ea | sed -E s/'SRR[0-9]+'/GSM4281997/); done
-
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/raw_data/GSM4281998
-for ea in SRR12391933*; do mv $ea $(echo $ea | sed s/S1/S2/); done
-for ea in *; do mv $ea $(echo $ea | sed -E s/'SRR[0-9]+'/GSM4281998/); done
 
 ## Align reads:
 ## Note: Cellranger v7+ counts intronic reads by default
@@ -73,7 +61,7 @@ ref="/home/shared/hg_align_db/GRCh38_Cellranger_gencode_v32_ensembl_98/refdata-g
 
 samples=$(awk -F',' 'NR>1{print $1}' ../rundata.csv)
 
-for ea in GSM4281997 GSM4281998; do
+for ea in *; do
   nice -n -18 $cellranger count \
     --id=$ea \
     --fastqs=../raw_data/${ea} \
