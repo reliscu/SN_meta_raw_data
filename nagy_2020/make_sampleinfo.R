@@ -41,3 +41,7 @@ rundata <- sampleinfo %>%
 
 write.table(sampleinfo, file="sampleinfo.csv", row.names=F, sep=",")
 write.table(rundata, file="rundata.csv", row.names=F, sep=",", quote=F)
+
+# sampleinfo <- read.csv("sampleinfo.csv")
+
+

@@ -1,5 +1,5 @@
 ## Get raw reads from SRA (control samples only):
-### Acc. ID: SRP319543
+## Acc. ID: SRP319543
 
 cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/morabito_2021
 
@@ -61,8 +61,8 @@ cat $(echo "$filelist" | grep -E _2.fastq) > ${sampleid}/${sampleid}_S1_L001_R1_
 cat $(echo "$filelist" | grep -E _3.fastq) > ${sampleid}/${sampleid}_S1_L001_R2_001.fastq
 
 ## Align reads:
-### Note: Cellranger v7+ counts intronic reads by default
-### Note: using prebuilt reference
+## Note: Cellranger v7+ counts intronic reads by default
+## Note: using prebuilt reference
 
 cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/morabito_2021/aligned_reads
 

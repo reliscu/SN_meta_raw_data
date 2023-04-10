@@ -18,14 +18,14 @@ for ea in $(ls ../raw_data); do
   --no-bam
 done
 
-## Concatonate samples:
-
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/tran_2020/aligned_reads
-
-cellranger="/opt/cellranger-7.1.0/bin/cellranger"
-
-$cellranger aggr \
-  --id="tran_2020_DLPFC" \
-  --csv="cellranger_aggr.csv" \
-  --normalize="none"
+# ## Concatonate samples:
+# 
+# cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/tran_2020/aligned_reads
+# 
+# cellranger="/opt/cellranger-7.1.0/bin/cellranger"
+# 
+# $cellranger aggr \
+#   --id="tran_2020_DLPFC" \
+#   --csv="cellranger_aggr.csv" \
+#   --normalize="none"
   

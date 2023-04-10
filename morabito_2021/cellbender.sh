@@ -1,10 +1,8 @@
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/tran_2020/aligned_reads
+cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/morabito_2021/aligned_reads
 
 source activate CellBender
 
-samples=""
-
-for ea in *5*DLPFC ; do
+for ea in GSM*; do
   if [[ ! -d ${ea}/cellbender ]]; then
     mkdir ${ea}/cellbender
   fi

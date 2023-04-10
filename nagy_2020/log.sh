@@ -3,8 +3,10 @@
 
 cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020
 
+fasterq="/home/shared/programs/sratoolkit.3.0.1-ubuntu64/bin/fasterq-dump"
+
 for ea in $(cat SRR_Acc_List.txt); do
-  /home/shared/programs/sratoolkit.3.0.1-ubuntu64/bin/fasterq-dump -e 13 -m 100GB -S -p -O raw_data $ea
+  $fasterq -e 13 -m 100GB -S -p -O raw_data $ea
   for fastqs in $(raw_data/${ea}*); do
     pigz -p 13 raw_data/${fastqs}
   done
@@ -59,9 +61,7 @@ cellranger="/opt/cellranger-7.1.0/bin/cellranger"
 
 ref="/home/shared/hg_align_db/GRCh38_Cellranger_gencode_v32_ensembl_98/refdata-gex-GRCh38-2020-A"
 
-samples=$(awk -F',' 'NR>1{print $1}' ../rundata.csv)
-
-for ea in *; do
+for ea in GSM*; do
   nice -n -18 $cellranger count \
     --id=$ea \
     --fastqs=../raw_data/${ea} \
@@ -70,14 +70,14 @@ for ea in *; do
     --localcores=14
 done
 
-## Concatonate samples:
+# ## Concatonate samples:
+# 
+# cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/aligned_reads
+# 
+# cellranger="/opt/cellranger-7.1.0/bin/cellranger"
+# 
+# $cellranger aggr \
+#   --id="nagy_2020" \
+#   --csv="cellranger_aggr.csv" \
+#   --normalize="none"
 
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/aligned_reads
-
-cellranger="/opt/cellranger-7.1.0/bin/cellranger"
-
-$cellranger aggr \
-  --id="nagy_2020" \
-  --csv="cellranger_aggr.csv" \
-  --normalize="none"
-  

@@ -1,11 +1,11 @@
-setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/tran_2020/cluster_cellbender")
+setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/morabito_2021/cluster")
 
 library(dplyr)
 library(Seurat)
 
 ## Load data:
 
-expr <- readRDS("../aligned_reads/tran_2020_DLPFC/tran_2020_DLPFC_cellbender.RDS")
+expr <- readRDS("../aligned_reads/tran_2020_DLPFC/tran_2020_DLPFC.RDS")
 
 dim(expr)
 # [1] 36601 11821
@@ -15,11 +15,11 @@ dim(expr)
 VlnPlot(expr, features=c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol=3)
 
 summary(expr[[]]$nCount_RNA)
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 625    5266    7911   13935   19049   80494
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 658    5386    8051   14149   19336   80769 
 summary(expr[[]]$nFeature_RNA)
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 503    2260    2884    3756    5467    8999
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 515    2321    2952    3811    5517    9070 
 
 expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "-", fixed=T), "[", 2))
 
@@ -46,7 +46,7 @@ expr <- RunUMAP(expr, reduction="pca", dims=1:20, min.dist=.5)
 expr <- FindNeighbors(expr, reduction="pca", dims=1:20)
 expr <- FindClusters(expr, resolution=.1)
 
-pdf("initial_clusters_cellbender.pdf")
+pdf("initial_clusters.pdf")
 DimPlot(expr, reduction="umap", pt.size=.3, label=T)
 DimPlot(expr, reduction="umap", group.by="Sample", pt.size=.3, label=T)
 FeaturePlot(expr, features="nFeature_RNA") 
@@ -57,7 +57,7 @@ dev.off()
 
 DefaultAssay(object=expr) <- "SCT"
 
-pdf("canonical_markers_cellbender.pdf")
+pdf("canonical_markers.pdf")
 
 ## OG
 genes <- c("MAG", "MOG")
@@ -112,17 +112,17 @@ markers %>%
   as.data.frame()
 
 expr$Cell_Class <- as.character(expr$seurat_clusters)
-expr$Cell_Class[is.element(expr$Cell_Class, c(0, 7, 8))] <- "OG"
+expr$Cell_Class[is.element(expr$Cell_Class, c(0))] <- "OG"
 expr$Cell_Class[is.element(expr$Cell_Class, c(5))] <- "OPC"
 expr$Cell_Class[is.element(expr$Cell_Class, c(2))] <- "ASC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(1, 9, 10, 12:14))] <- "EXC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(3, 6, 11, 15))] <- "INH"
+expr$Cell_Class[is.element(expr$Cell_Class, c(1, 7, 8, 10:12))] <- "EXC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(3, 6, 9, 13))] <- "INH"
 expr$Cell_Class[is.element(expr$Cell_Class, c(4))] <- "MIC"
 
 Idents(expr) <- expr$Cell_Class
 
-pdf("annotated_clusters_cellbender.pdf")
+pdf("annotated_clusters.pdf")
 DimPlot(expr, reduction="umap", pt.size=.3, label=T)
 dev.off()
 
-saveRDS(expr, file="expression_tran_2020_DLPFC_cellbender_annotated.RDS")
+saveRDS(expr, file="expression_tran_2020_DLPFC_annotated.RDS")
