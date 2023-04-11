@@ -5,7 +5,7 @@ library(Seurat)
 
 ## Load data:
 
-expr <- readRDS("../aligned_reads/tran_2020_DLPFC/tran_2020_DLPFC.RDS")
+expr <- readRDS("../aligned_reads/morabito_2020/morabito_2020.RDS")
 
 dim(expr)
 # [1] 36601 11821
