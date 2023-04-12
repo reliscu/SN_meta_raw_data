@@ -39,8 +39,8 @@ for i in $(seq 2 $n_files); do
   runsR1=($(printf '%s\n' * | grep -f runs.txt | grep '_R1_'))
   runsR2=($(printf '%s\n' * | grep -f runs.txt | grep '_R2_'))
   
-  n_runs=$(cat runs.txt | wc -w)
-  if [[ $n_runs > 1 ]]; then
+  nruns=$(cat runs.txt | wc -w)
+  if [[ $nruns > 1 ]]; then
     cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[1]} | sed s/$sra/$geo/)
     cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[1]} | sed s/$sra/$geo/)
   else

@@ -5,8 +5,7 @@ library(Seurat)
 
 ## Load data:
 
-expr <- readRDS("../aligned_reads/morabito_2020/morabito_2020.RDS")
-
+expr <- readRDS("../aligned_reads/morabito_2021/morabito_2021.RDS")
 dim(expr)
 # [1] 36601 11821
 
@@ -16,18 +15,16 @@ VlnPlot(expr, features=c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol=3)
 
 summary(expr[[]]$nCount_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 658    5386    8051   14149   19336   80769 
+# 652    4031    6576    9124   10103   81498 
 summary(expr[[]]$nFeature_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 515    2321    2952    3811    5517    9070 
+# 509    1878    2566    2855    3341    9063 
 
-expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "-", fixed=T), "[", 2))
+expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "_", fixed=T), "[", 1))
 
 ## Cells per sample:
 
 table(expr$Sample)
-# 1    2    3 
-# 4514 5497 1810 
 
 ## Integrate samples:
 ### Ref: https://satijalab.org/seurat/articles/integration_introduction.html
@@ -112,12 +109,15 @@ markers %>%
   as.data.frame()
 
 expr$Cell_Class <- as.character(expr$seurat_clusters)
-expr$Cell_Class[is.element(expr$Cell_Class, c(0))] <- "OG"
+expr$Cell_Class[is.element(expr$Cell_Class, c(0, 1))] <- "OG"
 expr$Cell_Class[is.element(expr$Cell_Class, c(5))] <- "OPC"
 expr$Cell_Class[is.element(expr$Cell_Class, c(2))] <- "ASC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(1, 7, 8, 10:12))] <- "EXC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(3, 6, 9, 13))] <- "INH"
-expr$Cell_Class[is.element(expr$Cell_Class, c(4))] <- "MIC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(4))] <- "EXC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(6, 7))] <- "INH"
+expr$Cell_Class[is.element(expr$Cell_Class, c(3))] <- "MIC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(9))] <- "PER"
+expr$Cell_Class[is.element(expr$Cell_Class, c(8))] <- "FIB"
+expr$Cell_Class[is.element(expr$Cell_Class, c(10))] <- "UNDEFINED"
 
 Idents(expr) <- expr$Cell_Class
 
@@ -125,4 +125,6 @@ pdf("annotated_clusters.pdf")
 DimPlot(expr, reduction="umap", pt.size=.3, label=T)
 dev.off()
 
-saveRDS(expr, file="expression_tran_2020_DLPFC_annotated.RDS")
+DefaultAssay(object=expr) <- "RNA"
+
+saveRDS(expr, file="expression_morabito_2021_annotated.RDS")

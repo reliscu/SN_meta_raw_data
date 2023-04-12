@@ -6,7 +6,6 @@ library(Seurat)
 ## Load data:
 
 expr <- readRDS("../aligned_reads/tran_2020_DLPFC/tran_2020_DLPFC.RDS")
-
 dim(expr)
 # [1] 36601 11821
 
@@ -21,7 +20,7 @@ summary(expr[[]]$nFeature_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 515    2321    2952    3811    5517    9070 
 
-expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "-", fixed=T), "[", 2))
+expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "_", fixed=T), "[", 1))
 
 ## Cells per sample:
 

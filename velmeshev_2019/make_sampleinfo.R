@@ -19,7 +19,7 @@ colnames(sampleinfo)[grep("Run", colnames(sampleinfo))] <- "Accession_ID"
 colnames(sampleinfo)[grep("Capbatch", colnames(sampleinfo))] <- "Batch"
 colnames(sampleinfo)[c(1)] <- "Label"
 
+write.table(sampleinfo, file="sampleinfo.csv", row.names=F, sep=",")
+
 ## Add Cellranger cell estimates:
 
-
-write.table(sampleinfo, file="sampleinfo.csv", row.names=F, sep=",")
