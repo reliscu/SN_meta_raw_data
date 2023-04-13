@@ -7,7 +7,7 @@ library(Seurat)
 
 expr <- readRDS("../aligned_reads/nagy_2020/nagy_2020.RDS")
 dim(expr)
-# [1] 36601 11821
+# [1] 36601 33260
 
 ## QC already performed:
 
@@ -15,16 +15,22 @@ VlnPlot(expr, features=c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol=3)
 
 summary(expr[[]]$nCount_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 652    4031    6576    9124   10103   81498 
+# 552    1180    2368    3716    4739   49543 
 summary(expr[[]]$nFeature_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 509    1878    2566    2855    3341    9063 
+# 501     900    1599    1980    2680    8995 
 
 expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "_", fixed=T), "[", 1))
 
 ## Cells per sample:
 
 table(expr$Sample)
+# GSM4281975 GSM4281976 GSM4281980 GSM4281982 GSM4281985 GSM4281986 GSM4281988 
+# 2013       1153       2340       1204       1691       1727       3541 
+# GSM4281989 GSM4281992 GSM4281993 GSM4281994 GSM4281995 GSM4281997 GSM4281998 
+# 1253       2750       4037       1920       2142        940         76 
+# GSM4282000 GSM4282002 GSM4282004 
+# 1067       2291       3115 
 
 ## Integrate samples:
 ### Ref: https://satijalab.org/seurat/articles/integration_introduction.html
@@ -109,6 +115,7 @@ markers %>%
   as.data.frame()
 
 expr$Cell_Class <- as.character(expr$seurat_clusters)
+
 expr$Cell_Class[is.element(expr$Cell_Class, c(0, 1))] <- "OG"
 expr$Cell_Class[is.element(expr$Cell_Class, c(5))] <- "OPC"
 expr$Cell_Class[is.element(expr$Cell_Class, c(2))] <- "ASC"

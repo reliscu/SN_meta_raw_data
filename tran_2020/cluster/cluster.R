@@ -111,6 +111,7 @@ markers %>%
   as.data.frame()
 
 expr$Cell_Class <- as.character(expr$seurat_clusters)
+
 expr$Cell_Class[is.element(expr$Cell_Class, c(0))] <- "OG"
 expr$Cell_Class[is.element(expr$Cell_Class, c(5))] <- "OPC"
 expr$Cell_Class[is.element(expr$Cell_Class, c(2))] <- "ASC"
