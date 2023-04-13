@@ -69,15 +69,3 @@ for ea in GSM*; do
     --transcriptome=$ref \
     --localcores=14
 done
-
-# ## Concatonate samples:
-# 
-# cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/aligned_reads
-# 
-# cellranger="/opt/cellranger-7.1.0/bin/cellranger"
-# 
-# $cellranger aggr \
-#   --id="nagy_2020" \
-#   --csv="cellranger_aggr.csv" \
-#   --normalize="none"
-

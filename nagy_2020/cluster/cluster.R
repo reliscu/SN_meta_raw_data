@@ -1,11 +1,11 @@
-setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/morabito_2021/cluster")
+setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/cluster")
 
 library(dplyr)
 library(Seurat)
 
 ## Load data:
 
-expr <- readRDS("../aligned_reads/morabito_2021/morabito_2021.RDS")
+expr <- readRDS("../aligned_reads/nagy_2020/nagy_2020.RDS")
 dim(expr)
 # [1] 36601 11821
 
@@ -126,4 +126,4 @@ dev.off()
 
 DefaultAssay(object=expr) <- "RNA"
 
-saveRDS(expr, file="expression_morabito_2021_annotated.RDS")
+saveRDS(expr, file="expression_nagy_2020_annotated.RDS")
