@@ -43,7 +43,11 @@ split <- lapply(X=split, FUN=function(x){
 features <- SelectIntegrationFeatures(object.list=split, nfeatures=2000)
 split <- PrepSCTIntegration(object.list=split, anchor.features=features)
 anchors <- FindIntegrationAnchors(object.list=split, anchor.features=features, normalization.method="SCT")
-expr <- IntegrateData(anchorset=anchors, normalization.method="SCT")
+kw <- 100
+if(min(table(expr$Sample))<100){
+  kw <- min(table(expr$Sample))
+}
+expr <- IntegrateData(anchorset=anchors, normalization.method="SCT", k.weight=kw)
 expr <- RunPCA(expr, npcs=20)
 expr <- RunUMAP(expr, reduction="pca", dims=1:20, min.dist=.5)
 expr <- FindNeighbors(expr, reduction="pca", dims=1:20)
