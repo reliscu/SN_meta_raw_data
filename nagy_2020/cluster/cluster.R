@@ -49,9 +49,11 @@ if(min(table(expr$Sample))<100){
 }
 expr <- IntegrateData(anchorset=anchors, normalization.method="SCT", k.weight=kw)
 expr <- RunPCA(expr, npcs=20)
-expr <- RunUMAP(expr, reduction="pca", dims=1:20, min.dist=.5)
+expr <- RunUMAP(expr, reduction="pca", dims=1:20, min.dist=.5) # n.neighbors=50
 expr <- FindNeighbors(expr, reduction="pca", dims=1:20)
 expr <- FindClusters(expr, resolution=.1)
+
+Idents(expr) <- expr$seurat_clusters
 
 pdf("initial_clusters.pdf")
 DimPlot(expr, reduction="umap", pt.size=.3, label=T)
@@ -120,14 +122,11 @@ markers %>%
 
 expr$Cell_Class <- as.character(expr$seurat_clusters)
 
-expr$Cell_Class[is.element(expr$Cell_Class, c(0, 1))] <- "OG"
-expr$Cell_Class[is.element(expr$Cell_Class, c(5))] <- "OPC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(2))] <- "ASC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(4))] <- "EXC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(6, 7))] <- "INH"
-expr$Cell_Class[is.element(expr$Cell_Class, c(3))] <- "MIC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(9))] <- "PER"
-expr$Cell_Class[is.element(expr$Cell_Class, c(8, 10))] <- "NEU"
+expr$Cell_Class[is.element(expr$Cell_Class, c(6))] <- "OG"
+expr$Cell_Class[is.element(expr$Cell_Class, c(8))] <- "OPC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(3))] <- "ASC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(0, 1, 2, 7, 10, 12, 13, 15))] <- "EXC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(4, 5, 9, 11, 14))] <- "INH"
 
 Idents(expr) <- expr$Cell_Class
 
