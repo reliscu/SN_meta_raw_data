@@ -1,13 +1,13 @@
-setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/cluster")
+setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/velmeshev_2019/cluster")
 
 library(dplyr)
 library(Seurat)
 
 ## Load data:
 
-expr <- readRDS("../aligned_reads/nagy_2020/nagy_2020.RDS")
+expr <- readRDS("../aligned_reads/velmeshev_2019/velmeshev_2019.RDS")
 dim(expr)
-# [1] 36601 33260
+# [1] 36601 24933
 
 ## QC already performed:
 
@@ -15,22 +15,20 @@ VlnPlot(expr, features=c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol=3)
 
 summary(expr[[]]$nCount_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 552    1180    2368    3716    4739   49543 
+# 581    1210    2186    4967    6765   50903 
 summary(expr[[]]$nFeature_RNA)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 501     900    1599    1980    2680    8995 
+# 502     843    1332    2121    3127    8987 
 
 expr[["Sample"]] <- as.character(sapply(strsplit(colnames(expr), "_", fixed=T), "[", 1))
 
 ## Cells per sample:
 
 table(expr$Sample)
-# GSM4281975 GSM4281976 GSM4281980 GSM4281982 GSM4281985 GSM4281986 GSM4281988 
-# 2013       1153       2340       1204       1691       1727       3541 
-# GSM4281989 GSM4281992 GSM4281993 GSM4281994 GSM4281995 GSM4281997 GSM4281998 
-# 1253       2750       4037       1920       2142        940         76 
-# GSM4282000 GSM4282002 GSM4282004 
-# 1067       2291       3115 
+# SRR9262921 SRR9262923 SRR9262935 SRR9262937 SRR9262940 
+# 2810       3243       1583       3013       2454 
+# SRR9262941 SRR9262942 SRR9262950 SRR9262952 SRR9262955 
+# 2413       1714       1890       1888       3925
 
 ## Integrate samples:
 ### Ref: https://satijalab.org/seurat/articles/integration_introduction.html
@@ -43,17 +41,10 @@ split <- lapply(X=split, FUN=function(x){
 features <- SelectIntegrationFeatures(object.list=split, nfeatures=2000)
 split <- PrepSCTIntegration(object.list=split, anchor.features=features)
 anchors <- FindIntegrationAnchors(object.list=split, anchor.features=features, normalization.method="SCT")
-kw <- 100
-if(min(table(expr$Sample))<100){
-  kw <- min(table(expr$Sample))
-}
-expr <- IntegrateData(anchorset=anchors, normalization.method="SCT", k.weight=kw)
 expr <- RunPCA(expr, npcs=20)
 expr <- RunUMAP(expr, reduction="pca", dims=1:20, min.dist=.5) # n.neighbors=50
 expr <- FindNeighbors(expr, reduction="pca", dims=1:20)
 expr <- FindClusters(expr, resolution=.1)
-
-Idents(expr) <- expr$seurat_clusters
 
 pdf("initial_clusters.pdf")
 DimPlot(expr, reduction="umap", pt.size=.3, label=T)
