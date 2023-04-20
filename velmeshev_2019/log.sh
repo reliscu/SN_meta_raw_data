@@ -3,17 +3,11 @@
 
 cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/velmeshev_2019/raw_data
 
-for ea in $(cat ../SRR_Acc_List.txt); do
-  nice -n -18 prefetch --output-directory $ea
-done
+## Note: pulling down just a subset of the data, including ASD samples:
 
-for ea in SRR*sra; do
-  run=$(echo $ea | sed 's/.sra//')
-  nfastqs=$(printf '%s\n' ${run}* | grep fastq | wc -l)
-  if [[ $nfastqs -lt 2 ]]; then
-    echo $ea
-    fasterq-dump -b 100GB -c 100GB -m 100GB -S -p $ea
-  fi
+for ea in $(cat ../SRR_Acc_List.txt); do 
+  prefetch $ea --output-file ${ea}.sra
+  fasterq-dump -b 100GB -c 100GB -m 100GB -S -p ${ea}.sra
 done
 
 ## Edit filenames to be compatible with Cellranger:
@@ -50,4 +44,12 @@ for ea in $samples; do
     --sample=$ea \
     --transcriptome=$ref \
     --localcores=7
+done
+
+## Zip fastqs
+
+cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/velmeshev_2019/raw_data
+
+for ea in *; do
+  pigz -p 7 $ea/*
 done

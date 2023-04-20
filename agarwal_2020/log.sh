@@ -1,7 +1,7 @@
-## Get raw reads from SRA (control samples only):
-## Acc. ID: SRP244344
+## Get raw reads from SRA (cortex samples only):
+## Acc. ID: SRP229590
 
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/raw_data
+cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/agarwal_2020/raw_data
 
 for ea in $(cat ../SRR_Acc_List.txt); do 
   prefetch $ea --output-file ${ea}.sra
@@ -10,14 +10,12 @@ done
 
 ## Edit filenames to be compatible with Cellranger:
 
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/raw_data
+cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/agarwal_2020/raw_data
 
-for ea in *_1.fastq; do mv $ea $(echo $ea | sed s/2/S1_L001_R1_001/); done
-for ea in *_2.fastq; do mv $ea $(echo $ea | sed s/3/S1_L001_R2_001/); done
-   
-## Combine and rename fastqs:
+for ea in *_1.fastq; do mv $ea $(echo $ea | sed s/_1/_S1_L001_R1_001/); done
+for ea in *_2.fastq; do mv $ea $(echo $ea | sed s/_2/_S1_L001_R2_001/); done
 
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/raw_data
+## Combine runs from the same sample:
 
 n_files=$(cat ../rundata.csv | wc -w)
 
@@ -31,32 +29,32 @@ for i in $(seq 2 $n_files); do
   ## Grep all SRA runs:
   runsR1=($(printf '%s\n' * | grep -f runs.txt | grep '_R1_'))
   runsR2=($(printf '%s\n' * | grep -f runs.txt | grep '_R2_'))
-  nruns=$(cat runs.txt | wc -w)
-  if [[ $nruns > 1 ]]; then
-    cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[1]} | sed s/$sra/$geo/)
-    cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[1]} | sed s/$sra/$geo/)
-  else
-    ## Not all samples have multiple runs, and above code won't work in that case:
-    cp $runsR1 ${geo}/$(echo $runsR1 | sed s/$sra/$geo/)
-    cp $runsR2 ${geo}/$(echo $runsR2 | sed s/$sra/$geo/)
-  fi
+  ## Concatonate runs from the same sample:
+  cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[1]} | sed s/$sra/$geo/)
+  cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[1]} | sed s/$sra/$geo/)
+  ## Zip fastqs:
+  pigz -p 5 ${geo}/*
 done
+
+# for ea in $samples; do mkdir $ea; mv ${ea}* $ea; done
 
 ## Align reads:
 ## Note: Cellranger v7+ counts intronic reads by default
 ## Note: using prebuilt reference
 
-cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/aligned_reads
+cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/velmeshev_2019/aligned_reads
 
 cellranger="/opt/cellranger-7.1.0/bin/cellranger"
 
 ref="/home/shared/hg_align_db/GRCh38_Cellranger_gencode_v32_ensembl_98/refdata-gex-GRCh38-2020-A"
 
-for ea in GSM*; do
-  nice -n -18 $cellranger count \
+samples=$(awk -F',' 'NR>1{print substr($10,2,length($10)-2)}' ../sampleinfo.csv)
+
+for ea in $samples; do
+  $cellranger count \
     --id=$ea \
     --fastqs=../raw_data/${ea} \
     --sample=$ea \
     --transcriptome=$ref \
-    --localcores=14
+    --localcores=7
 done

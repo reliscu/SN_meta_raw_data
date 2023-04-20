@@ -12,10 +12,7 @@ table(dat$Batch)
 # 1  1  4  4  4  5 
 
 sampleinfo <- sampleinfo %>%
-  dplyr::select(title, 
-                geo_accession, 
-                `Sex:ch1`,
-                `group:ch1`) %>%
+  dplyr::select(title, geo_accession, `Sex:ch1`,`group:ch1`) %>%
   dplyr::mutate(
     title=as.character(
       sapply(strsplit(title, ":"), "[", 1)

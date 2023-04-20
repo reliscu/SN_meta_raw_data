@@ -41,6 +41,7 @@ split <- lapply(X=split, FUN=function(x){
 features <- SelectIntegrationFeatures(object.list=split, nfeatures=2000)
 split <- PrepSCTIntegration(object.list=split, anchor.features=features)
 anchors <- FindIntegrationAnchors(object.list=split, anchor.features=features, normalization.method="SCT")
+expr <- IntegrateData(anchorset=anchors, normalization.method="SCT")
 expr <- RunPCA(expr, npcs=20)
 expr <- RunUMAP(expr, reduction="pca", dims=1:20, min.dist=.5) # n.neighbors=50
 expr <- FindNeighbors(expr, reduction="pca", dims=1:20)
@@ -57,7 +58,7 @@ dev.off()
 
 DefaultAssay(object=expr) <- "SCT"
 
-pdf("canonical_markers2.pdf")
+pdf("canonical_markers.pdf")
 
 ## OG
 genes <- c("MAG", "MOG")
@@ -113,11 +114,12 @@ markers %>%
 
 expr$Cell_Class <- as.character(expr$seurat_clusters)
 
-expr$Cell_Class[is.element(expr$Cell_Class, c(6))] <- "OG"
-expr$Cell_Class[is.element(expr$Cell_Class, c(8))] <- "OPC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(0))] <- "OG"
+expr$Cell_Class[is.element(expr$Cell_Class, c(4))] <- "OPC"
 expr$Cell_Class[is.element(expr$Cell_Class, c(3))] <- "ASC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(0, 1, 2, 7, 10, 12, 13, 15))] <- "EXC"
-expr$Cell_Class[is.element(expr$Cell_Class, c(4, 5, 9, 11, 14))] <- "INH"
+expr$Cell_Class[is.element(expr$Cell_Class, c(1, 2, 6, 9))] <- "EXC"
+expr$Cell_Class[is.element(expr$Cell_Class, c(5, 7, 10, 11, 12))] <- "INH"
+expr$Cell_Class[is.element(expr$Cell_Class, c(8))] <- "MIC"
 
 Idents(expr) <- expr$Cell_Class
 
@@ -127,4 +129,4 @@ dev.off()
 
 DefaultAssay(object=expr) <- "RNA"
 
-saveRDS(expr, file="expression_nagy_2020_annotated.RDS")
+saveRDS(expr, file="expression_velmeshev_2019_annotated.RDS")
