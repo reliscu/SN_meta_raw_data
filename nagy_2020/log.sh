@@ -19,11 +19,10 @@ for ea in *_2.fastq; do mv $ea $(echo $ea | sed s/3/S1_L001_R2_001/); done
 
 cd /mnt/bdata/rebecca/SCSN_meta_analysis/datasets/nagy_2020/raw_data
 
-n_files=$(cat ../rundata.csv | wc -w)
+nfiles=$(cat ../rundata.csv | wc -w)
 
-for i in $(seq 2 $n_files); do
+for i in $(seq 2 $nfiles); do
   geo=$(awk -v i=$i -F',' 'NR==i{print $1}' ../rundata.csv)
-  sra=$(awk -v i=$i -F',' 'NR==i{print $2}' ../rundata.csv)
   echo $geo
   if [[ ! -d $geo ]]; then mkdir $geo; fi
   ## Save file w/ list of all SRA runs associated with a sample (for grepping):
@@ -31,15 +30,18 @@ for i in $(seq 2 $n_files); do
   ## Grep all SRA runs:
   runsR1=($(printf '%s\n' * | grep -f runs.txt | grep '_R1_'))
   runsR2=($(printf '%s\n' * | grep -f runs.txt | grep '_R2_'))
+  sra=$(awk -v i=$i -F',' 'NR==i{print $2}' ../rundata.csv)
   nruns=$(cat runs.txt | wc -w)
-  if [[ $nruns > 1 ]]; then
-    cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[1]} | sed s/$sra/$geo/)
-    cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[1]} | sed s/$sra/$geo/)
+  if [[ $nruns -gt 1 ]]; then
+    cat ${runsR1[@]} > ${geo}/$(echo ${runsR1[0]} | sed s/$sra/$geo/)
+    cat ${runsR2[@]} > ${geo}/$(echo ${runsR2[0]} | sed s/$sra/$geo/)
   else
     ## Not all samples have multiple runs, and above code won't work in that case:
     cp $runsR1 ${geo}/$(echo $runsR1 | sed s/$sra/$geo/)
     cp $runsR2 ${geo}/$(echo $runsR2 | sed s/$sra/$geo/)
   fi
+  ## Zip resultant fastqs:
+  pigz -p 6 ${geo}/*
 done
 
 ## Align reads:
