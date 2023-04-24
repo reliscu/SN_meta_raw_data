@@ -2,6 +2,7 @@ setwd("/mnt/bdata/rebecca/SCSN_meta_analysis/datasets/agarwal_2020")
 
 library(dplyr)
 library(GEOquery)
+library(data.table)
 
 sampleinfo <- pData(getGEO("GSE140231")[[1]])
 
